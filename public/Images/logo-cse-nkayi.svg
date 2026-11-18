@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Complexe Scolaire Évangélique de Nkayi">
+  <title>Complexe Scolaire Évangélique de Nkayi</title>
+  <!-- Fond rond bleu, double filet blanc comme le cachet -->
+  <circle cx="256" cy="256" r="248" fill="#1d4ed8"/>
+  <circle cx="256" cy="256" r="228" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <!-- Grand C (rayon intérieur 131) -->
+  <path d="M356.3 136.5 A156 156 0 1 0 356.3 375.5" fill="none" stroke="#ffffff" stroke-width="50" stroke-linecap="round"/>
+  <!-- Livre ouvert : épouse tout l'intérieur du C, un mince liseré bleu le sépare du C -->
+  <path d="M256 140 C226 136 182 160 144 204 L144 312 C184 336 226 352 256 370 Z" fill="#ffffff"/>
+  <path d="M256 140 C286 136 330 160 368 204 L368 312 C328 336 286 352 256 370 Z" fill="#ffffff"/>
+  <!-- Reliure et tranches des pages -->
+  <path d="M256 140 L256 370" stroke="#1d4ed8" stroke-width="7"/>
+  <path d="M146 298 C186 322 228 338 256 354 C284 338 326 322 366 298" fill="none" stroke="#1d4ed8" stroke-width="4"/>
+  <path d="M146 286 C186 310 228 326 256 342 C284 326 326 310 366 286" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+  <!-- Initiales S et E sur les pages -->
+  <text x="203" y="274" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="128" font-weight="700" fill="#1d4ed8">S</text>
+  <text x="310" y="274" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="128" font-weight="700" fill="#1d4ed8">E</text>
+</svg>
