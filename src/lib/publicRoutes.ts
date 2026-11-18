@@ -5,6 +5,11 @@ import { PublicPage } from '../components/PublicHeader';
 // l'URL). Synchronisés avec l'historique du navigateur depuis App.tsx.
 export const PUBLIC_PATHS: Record<PublicPage, string> = {
   home: '/',
+  about: '/etablissement',
+  education: '/enseignement',
+  admissions: '/admissions',
+  'school-life': '/vie-scolaire',
+  news: '/actualites',
   contact: '/contact',
   privacy: '/confidentialite',
   // Suivi du jeton du lien : /inscription/<jeton>.

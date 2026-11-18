@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Award, Bell, BellOff, Calendar, CheckCheck, ClipboardCheck, DollarSign, FileText, LucideIcon, Megaphone, MessageSquare, UserPlus, Wallet,
+  Award, Bell, BellOff, Calendar, CheckCheck, ClipboardCheck, DollarSign, FileText, Inbox, LucideIcon, Megaphone, MessageSquare, UserPlus, Wallet,
 } from 'lucide-react';
 import { AppNotification, NotificationType, relativeTime, useNotifications } from '../../lib/notifications';
 import { t } from '../../i18n';
@@ -15,6 +15,7 @@ const TYPE_STYLES: Record<NotificationType, { icon: LucideIcon; className: strin
   schedule: { icon: Calendar, className: 'bg-indigo-100 text-indigo-600' },
   followup: { icon: ClipboardCheck, className: 'bg-red-100 text-red-600' },
   registration: { icon: UserPlus, className: 'bg-green-100 text-green-600' },
+  contact: { icon: Inbox, className: 'bg-amber-100 text-amber-700' },
 };
 
 interface NotificationBellProps {

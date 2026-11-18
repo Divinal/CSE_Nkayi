@@ -1,8 +1,24 @@
 import React from 'react';
-import { siteConfig, phoneHref } from '../config/site.config';
+import { siteConfig, phoneHref, hasPublicEmail } from '../config/site.config';
 import { PublicPage } from './PublicHeader';
 import { PUBLIC_PATHS } from '../lib/publicRoutes';
 import { t } from '../i18n';
+
+const FOOTER_LINKS: Record<'main' | 'families', { id: PublicPage; label: string }[]> = {
+  main: [
+    { id: 'home', label: t("Accueil") },
+    { id: 'about', label: "L'établissement" },
+    { id: 'education', label: 'Enseignement' },
+    { id: 'news', label: 'Actualités et événements' },
+  ],
+  families: [
+    { id: 'admissions', label: 'Inscriptions et admissions' },
+    { id: 'admissions', label: 'Questions fréquentes' },
+    { id: 'school-life', label: 'Vie scolaire et tenue' },
+    { id: 'contact', label: 'Nous écrire' },
+    { id: 'privacy', label: t("Confidentialité") },
+  ],
+};
 
 interface PublicFooterProps {
   onNavigate: (page: PublicPage) => void;
@@ -27,21 +43,13 @@ const PublicFooter: React.FC<PublicFooterProps> = ({ onNavigate, onLoginClick })
           <div>
             <h3 className="font-bold text-gray-900 mb-4 text-lg">{t("Liens rapides")}</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a href={PUBLIC_PATHS.home} onClick={navigate('home')} className="text-gray-600 hover:text-blue-600 transition">
-                  {t("Accueil")}
-                </a>
-              </li>
-              <li>
-                <a href={PUBLIC_PATHS.contact} onClick={navigate('contact')} className="text-gray-600 hover:text-blue-600 transition">
-                  {t("Contact")}
-                </a>
-              </li>
-              <li>
-                <a href={PUBLIC_PATHS.privacy} onClick={navigate('privacy')} className="text-gray-600 hover:text-blue-600 transition">
-                  {t("Confidentialité")}
-                </a>
-              </li>
+              {FOOTER_LINKS.main.map((link) => (
+                <li key={link.id}>
+                  <a href={PUBLIC_PATHS[link.id]} onClick={navigate(link.id)} className="text-gray-600 hover:text-blue-600 transition">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
               <li>
                 <button onClick={onLoginClick} className="text-gray-600 hover:text-blue-600 transition">
                   {t("Connexion")}
@@ -51,12 +59,15 @@ const PublicFooter: React.FC<PublicFooterProps> = ({ onNavigate, onLoginClick })
           </div>
 
           <div>
-            <h3 className="font-bold text-gray-900 mb-4 text-lg">{t("Ressources")}</h3>
+            <h3 className="font-bold text-gray-900 mb-4 text-lg">Familles</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition">{t("Aide")}</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition">{t("Guide d'utilisation")}</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition">{t("FAQ")}</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition">{t("Support")}</a></li>
+              {FOOTER_LINKS.families.map((link) => (
+                <li key={link.label}>
+                  <a href={PUBLIC_PATHS[link.id]} onClick={navigate(link.id)} className="text-gray-600 hover:text-blue-600 transition">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -66,11 +77,13 @@ const PublicFooter: React.FC<PublicFooterProps> = ({ onNavigate, onLoginClick })
               {siteConfig.contact.addressLines.map((line) => (
                 <li key={line}>{t(line)}</li>
               ))}
-              <li>
-                <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-blue-600 transition">
-                  {siteConfig.contact.email}
-                </a>
-              </li>
+              {hasPublicEmail() && (
+                <li>
+                  <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-blue-600 transition">
+                    {siteConfig.contact.email}
+                  </a>
+                </li>
+              )}
               <li>
                 <a href={phoneHref(siteConfig.contact.phone)} className="hover:text-blue-600 transition">
                   {siteConfig.contact.phone}

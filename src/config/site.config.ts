@@ -55,5 +55,9 @@ export const siteConfig = {
 
 export type SiteConfig = typeof siteConfig;
 
+// L'adresse d'exemple n'est jamais affichée aux visiteurs.
+export const hasPublicEmail = (): boolean =>
+  Boolean(siteConfig.contact.email) && !/@exemple\.com$/i.test(siteConfig.contact.email);
+
 // Lien d'appel : seul le premier numéro est composé.
 export const phoneHref = (phone: string): string => `tel:${phone.split('/')[0].replace(/\s/g, '')}`;

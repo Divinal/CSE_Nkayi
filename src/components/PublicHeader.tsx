@@ -6,7 +6,9 @@ import { t } from '../i18n';
 import LanguageSwitcher from './ui/LanguageSwitcher';
 
 // « register » : page d'inscription ouverte depuis un lien envoyé par l'administration.
-export type PublicPage = 'home' | 'contact' | 'privacy' | 'register';
+export type PublicPage =
+  | 'home' | 'about' | 'education' | 'admissions' | 'school-life' | 'news'
+  | 'contact' | 'privacy' | 'register';
 
 interface PublicHeaderProps {
   currentPage: PublicPage;
@@ -14,10 +16,15 @@ interface PublicHeaderProps {
   onLoginClick: () => void;
 }
 
+// La confidentialité reste accessible depuis le pied de page.
 const navItems: { id: PublicPage; label: string }[] = [
   { id: 'home', label: t("Accueil") },
+  { id: 'about', label: "L'établissement" },
+  { id: 'education', label: 'Enseignement' },
+  { id: 'admissions', label: 'Admissions' },
+  { id: 'school-life', label: 'Vie scolaire' },
+  { id: 'news', label: 'Actualités' },
   { id: 'contact', label: t("Contact") },
-  { id: 'privacy', label: t("Confidentialité") },
 ];
 
 const PublicHeader: React.FC<PublicHeaderProps> = ({ currentPage, onNavigate, onLoginClick }) => {
@@ -49,13 +56,13 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ currentPage, onNavigate, on
             <h1 className="text-base sm:text-xl md:text-2xl font-bold leading-tight text-blue-600">{t(siteConfig.schoolName)}</h1>
           </a>
 
-          <div className="hidden md:flex shrink-0 items-center gap-8">
+          <div className="hidden xl:flex shrink-0 items-center gap-5">
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={PUBLIC_PATHS[item.id]}
                 onClick={navigate(item.id)}
-                className={`transition ${
+                className={`text-sm transition ${
                   currentPage === item.id ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'
                 }`}
               >
@@ -71,11 +78,13 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ currentPage, onNavigate, on
             </button>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2 md:hidden">
+          <div className="flex shrink-0 items-center gap-2 xl:hidden">
           <LanguageSwitcher />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-blue-600"
+            className="p-2 text-gray-600 hover:text-blue-600"
+            aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <CloseIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -83,7 +92,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ currentPage, onNavigate, on
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-3 border-t pt-4">
+          <div className="xl:hidden mt-4 pb-4 space-y-1 border-t pt-4">
             {navItems.map((item) => (
               <a
                 key={item.id}

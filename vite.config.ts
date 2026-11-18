@@ -64,7 +64,11 @@ function seoHtmlPlugin(): Plugin {
     },
     generateBundle() {
       const url = siteConfig.siteUrl
-      const publicPaths = ['/', '/contact', '/confidentialite']
+      // Mêmes chemins que PUBLIC_PATHS (src/lib/publicRoutes.ts), sauf l'inscription par lien.
+      const publicPaths = [
+        '/', '/etablissement', '/enseignement', '/admissions', '/vie-scolaire', '/actualites',
+        '/contact', '/confidentialite',
+      ]
       const today = new Date().toISOString().slice(0, 10)
 
       this.emitFile({

@@ -4,8 +4,11 @@ import {
   Home, Users, BookOpen, Plus, Edit, Trash2, Search,
   FileText, Bell, Clock, Eye, MessageSquare, GraduationCap,
   ChevronLeft, ChevronRight, Filter, DollarSign, Shield,
-  ClipboardCheck, KeyRound, Link2, Printer
+  ClipboardCheck, KeyRound, Link2, Printer, Inbox
 } from 'lucide-react';
+import ContactInbox from '../components/contact/ContactInbox';
+import { countUnreadContactMessages } from '../lib/contact';
+import { NOTIFICATION_EVENT } from '../lib/notifications';
 import { supabase } from '../lib/supabaseClient';
 import { callAdminUsers } from '../lib/adminUsers';
 import AppShell, { NavGroup } from '../components/ui/AppShell';
@@ -89,10 +92,11 @@ interface ScheduleDetailed extends Schedule {
 // Onglets visibles selon le rôle connecté (la vraie barrière reste les
 // policies RLS côté base ; ceci n'est qu'un filtrage d'affichage)
 const ROLE_TABS: Record<string, string[]> = {
-  admin: ['dashboard', 'students', 'teachers', 'levels', 'subjects', 'schedules', 'announcements', 'messages', 'assign-teachers', 'grades', 'followup', 'finance', 'admins', 'trash'],
-  academic_admin: ['dashboard', 'students', 'teachers', 'levels', 'subjects', 'schedules', 'announcements', 'messages', 'assign-teachers', 'grades', 'followup', 'trash'],
+  // 'site-messages' : mêmes rôles que la policy RLS de la table contact_messages.
+  admin: ['dashboard', 'students', 'teachers', 'levels', 'subjects', 'schedules', 'announcements', 'messages', 'site-messages', 'assign-teachers', 'grades', 'followup', 'finance', 'admins', 'trash'],
+  academic_admin: ['dashboard', 'students', 'teachers', 'levels', 'subjects', 'schedules', 'announcements', 'messages', 'site-messages', 'assign-teachers', 'grades', 'followup', 'trash'],
   finance_admin: ['dashboard', 'students', 'teachers', 'levels', 'messages', 'finance', 'trash'],
-  admin_secretaire: ['dashboard', 'students', 'teachers', 'levels', 'subjects', 'schedules', 'messages', 'assign-teachers', 'followup', 'trash'],
+  admin_secretaire: ['dashboard', 'students', 'teachers', 'levels', 'subjects', 'schedules', 'messages', 'site-messages', 'assign-teachers', 'followup', 'trash'],
 };
 // Une seule navigation pour tous les rôles admin : chacun n'en voit que ce que
 // ROLE_TABS lui autorise.
@@ -123,6 +127,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: tr("Communication"),
     items: [
       { id: 'messages', label: tr("Messages"), icon: MessageSquare },
+      { id: 'site-messages', label: 'Messages du site', icon: Inbox },
       { id: 'announcements', label: tr("Annonces"), icon: Bell },
     ],
   },
@@ -182,6 +187,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, onChang
   const [printLevelId, setPrintLevelId] = useState<string>('');
   const [registrationRole, setRegistrationRole] = useState<RegistrationRole | null>(null);
   const [messageRecipient, setMessageRecipient] = useState<MessageRecipientTarget | null>(null);
+  const [contactUnread, setContactUnread] = useState<number>(0);
 
   const [teacherAssignForm, setTeacherAssignForm] = useState({
     teacherId: '',
@@ -268,6 +274,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout, onChang
   useEffect(() => {
     loadAllData();
   }, []);
+
+  // Badge « Messages du site » : rechargé à l'arrivée d'une notification de contact.
+  const canReadSiteMessages = allowedTabs.includes('site-messages');
+  useEffect(() => {
+    if (!canReadSiteMessages) return undefined;
+    const refresh = () => { countUnreadContactMessages().then(setContactUnread); };
+    refresh();
+    const onNotification = (event: Event) => {
+      const types = (event as CustomEvent<{ types?: string[] }>).detail?.types || [];
+      if (types.includes('contact')) refresh();
+    };
+    window.addEventListener(NOTIFICATION_EVENT, onNotification);
+    return () => window.removeEventListener(NOTIFICATION_EVENT, onNotification);
+  }, [canReadSiteMessages]);
 
   const loadAllData = async () => {
     setLoading(true);
@@ -1032,7 +1052,9 @@ const filteredSubjects = subjects.filter(subject => {
           .filter(item => allowedTabs.includes(item.id))
           .map(item => item.id === 'levels'
             ? { ...item, badge: students.filter(student => !student.level_id).length }
-            : item),
+            : item.id === 'site-messages'
+              ? { ...item, badge: contactUnread }
+              : item),
       }))}
       activeId={activeTab}
       onSelect={(tab) => {
@@ -1082,6 +1104,9 @@ const filteredSubjects = subjects.filter(subject => {
             initialRecipient={messageRecipient}
           />
         )}
+
+        {/* MESSAGES DU SITE (formulaire de contact public) */}
+        {activeTab === 'site-messages' && <ContactInbox onUnreadChange={setContactUnread} />}
 
       {/* FINANCE TAB - GESTION FINANCIÈRE */}
       {activeTab === 'finance' && <FinanceManagement />}

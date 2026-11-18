@@ -5,6 +5,11 @@ import { PUBLIC_PATHS, pathToPublicPage } from './lib/publicRoutes';
 import { tokenFromPath } from './lib/registration';
 import HomePage from './pages/HomePage';
 import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
+import EducationPage from './pages/EducationPage';
+import AdmissionsPage from './pages/AdmissionsPage';
+import SchoolLifePage from './pages/SchoolLifePage';
+import NewsPage from './pages/NewsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import LoginModal from './components/LoginModal';
@@ -26,6 +31,26 @@ const PAGE_SEO: Record<PublicPage, { title: string; description: string }> = {
   home: {
     title: `${siteConfig.schoolName} — ${siteConfig.tagline}`,
     description: siteConfig.hero.description,
+  },
+  about: {
+    title: `L'établissement — ${siteConfig.schoolName}`,
+    description: `Présentation de ${siteConfig.schoolName} à Nkayi : devise Travail – Prière – Réussite, projet éducatif et équipe.`,
+  },
+  education: {
+    title: `Enseignement : de la garderie au lycée — ${siteConfig.schoolName}`,
+    description: 'Garderie, préscolaire, primaire (CEPE), collège (BEPC) et lycée (BAC) selon le système éducatif de la République du Congo.',
+  },
+  admissions: {
+    title: `Inscriptions et admissions — ${siteConfig.schoolName}`,
+    description: `Comment inscrire votre enfant à ${siteConfig.schoolName} : étapes, pièces à fournir, frais et questions fréquentes.`,
+  },
+  'school-life': {
+    title: `Vie scolaire et tenue — ${siteConfig.schoolName}`,
+    description: 'Vie spirituelle, sport, fêtes, règles de vie et tenue scolaire officielle du Congo, cycle par cycle.',
+  },
+  news: {
+    title: `Actualités et agenda — ${siteConfig.schoolName}`,
+    description: `Agenda de l'année scolaire de ${siteConfig.schoolName} : fêtes, compositions, examens d'État et inscriptions.`,
   },
   contact: {
     title: t("Contact — {0}", [siteConfig.schoolName]),
@@ -223,6 +248,7 @@ const App: React.FC = () => {
       window.history.pushState({}, '', path);
     }
     setCurrentPage(page);
+    window.scrollTo(0, 0);
   };
   const handleLoginClick = () => setShowLoginModal(true);
 
@@ -237,6 +263,21 @@ const App: React.FC = () => {
     <div>
       {currentPage === 'home' && (
         <HomePage onNavigate={handleNavigate} onLoginClick={handleLoginClick} />
+      )}
+      {currentPage === 'about' && (
+        <AboutPage onNavigate={handleNavigate} onLoginClick={handleLoginClick} />
+      )}
+      {currentPage === 'education' && (
+        <EducationPage onNavigate={handleNavigate} onLoginClick={handleLoginClick} />
+      )}
+      {currentPage === 'admissions' && (
+        <AdmissionsPage onNavigate={handleNavigate} onLoginClick={handleLoginClick} />
+      )}
+      {currentPage === 'school-life' && (
+        <SchoolLifePage onNavigate={handleNavigate} onLoginClick={handleLoginClick} />
+      )}
+      {currentPage === 'news' && (
+        <NewsPage onNavigate={handleNavigate} onLoginClick={handleLoginClick} />
       )}
       {currentPage === 'contact' && (
         <ContactPage onNavigate={handleNavigate} onLoginClick={handleLoginClick} />
