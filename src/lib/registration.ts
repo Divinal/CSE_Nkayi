@@ -4,6 +4,7 @@ import { supabase } from './supabaseClient';
 import { callAdminUsers } from './adminUsers';
 import { SchoolCycle } from './levels';
 import { t } from '../i18n';
+import { siteConfig } from '../config/site.config';
 
 export type RegistrationRole = 'student' | 'teacher';
 
@@ -25,7 +26,10 @@ export type LinkStatus = 'active' | 'expired' | 'full' | 'disabled';
 
 export const REGISTRATION_PATH = '/inscription/';
 
-export const registrationUrl = (token: string): string => `${window.location.origin}${REGISTRATION_PATH}${token}`;
+// Toujours l'adresse publique du site : un lien créé depuis un poste local
+// (localhost) ou un aperçu Vercel doit rester utilisable par les familles.
+export const registrationUrl = (token: string): string =>
+  `${siteConfig.siteUrl || window.location.origin}${REGISTRATION_PATH}${token}`;
 
 export const tokenFromPath = (pathname: string): string =>
   pathname.startsWith(REGISTRATION_PATH) ? decodeURIComponent(pathname.slice(REGISTRATION_PATH.length).split('/')[0]) : '';

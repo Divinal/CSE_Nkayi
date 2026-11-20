@@ -19,7 +19,7 @@ Il reste à lui donner **sa propre base Supabase**, **son dépôt GitHub** et **
 
 - `contact.email` : l'adresse email de l'école (actuellement `contact@exemple.com`).
 - `reportCard.authorityLines` : ajouter si besoin la ligne de l'inspection dont dépend l'école (en-tête du bulletin).
-- `siteUrl` : l'adresse définitive donnée par Vercel (étape 3).
+- `siteUrl` : ✅ fait — `https://cse-nkayi.vercel.app` (sert aussi aux liens d'inscription envoyés aux familles).
 
 ## 1. Créer la base Supabase
 
@@ -77,6 +77,35 @@ Il reste à lui donner **sa propre base Supabase**, **son dépôt GitHub** et **
 3. **Deploy**. Reportez ensuite l'adresse obtenue :
    - dans `siteUrl` (`src/config/site.config.ts`), puis poussez sur GitHub ;
    - dans Supabase → *Authentication → URL Configuration* → **Site URL** et **Redirect URLs**.
+   Adresse du site : **https://cse-nkayi.vercel.app** (Site URL = cette adresse ;
+   Redirect URLs = `https://cse-nkayi.vercel.app/**`).
+
+## Dépannage : « Service de gestion des comptes injoignable » / « pas encore déployé »
+
+L'ajout d'étudiants, d'enseignants et d'admins, la réinitialisation des mots de passe,
+la corbeille et l'inscription par lien passent tous par la fonction serveur `admin-users`.
+Si elle n'est pas déployée, toutes ces actions échouent. Pour la déployer, il faut être
+connecté au **compte Supabase propriétaire du projet** `fjfadrzaanrwibkgugkh` :
+
+```powershell
+npx supabase logout
+```
+```powershell
+npx supabase login
+```
+```powershell
+npx supabase functions deploy admin-users --project-ref fjfadrzaanrwibkgugkh
+```
+```powershell
+npx supabase secrets set SCHOOL_CODE=SE --project-ref fjfadrzaanrwibkgugkh
+```
+
+Sans terminal : Supabase → *Edge Functions* → **Deploy a new function** → *Via Editor*,
+nom `admin-users`, créer les deux fichiers `index.ts` et `handler.ts` avec le contenu de
+`supabase/functions/admin-users/`, puis **désactiver la vérification JWT** dans les
+réglages de la fonction (la session est vérifiée dans le code, comme le prévoit
+`supabase/config.toml` avec `verify_jwt = false`), et ajouter le secret
+`SCHOOL_CODE` = `SE` dans *Edge Functions → Secrets*.
 
 ## Tester en local
 
